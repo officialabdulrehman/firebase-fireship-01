@@ -20,11 +20,16 @@ function App() {
     setDisplayUser(user)
   })
 
+  const btn = !displayUser ? (
+    <button onClick={handleGoogleSignin}>Google Signin</button>
+  ) : (
+    <button onClick={handleLogout}>Logout</button>
+  );
+
   return (
     <div className="App">
       {userSection}
-      <button onClick={handleGoogleSignin}>Google Signin</button>
-      <button onClick={handleLogout}>Logout</button>
+      {btn}
     </div >
   )
 }
