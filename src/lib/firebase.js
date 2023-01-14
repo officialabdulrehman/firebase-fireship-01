@@ -1,7 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
 
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -18,7 +17,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-const firebaseAuthService = getAuth(app)
+export const firebaseAuthService = getAuth(app)
 const googleAuthProvider = new GoogleAuthProvider()
 
 export const handleGoogleSignin = async () => {
@@ -36,7 +35,7 @@ export const handleLogout = async () => {
   }
 }
 
-const db = getFirestore(app);
+// const db = getFirestore(app);
 
 // Get a list of cities from your database
 // async function getCities(db) {
