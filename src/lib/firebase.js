@@ -1,6 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
+import { addDoc, collection, getDocs, getFirestore } from "firebase/firestore";
 
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -35,12 +36,20 @@ export const handleLogout = async () => {
   }
 }
 
-// const db = getFirestore(app);
+export const db = getFirestore(app);
+
+export const thingsRef = collection(db, 'things')
 
 // Get a list of cities from your database
-// async function getCities(db) {
-//   const citiesCol = collection(db, 'cities');
-//   const citySnapshot = await getDocs(citiesCol);
-//   const cityList = citySnapshot.docs.map(doc => doc.data());
-//   return cityList;
-// }
+export async function getThings() {
+  const thingsCol = collection(db, 'things');
+  const citySnapshot = await getDocs(thingsCol);
+  const cityList = citySnapshot.docs.map(doc => doc.data());
+  return cityList;
+}
+
+export async function addThing(data) {
+  const thingsCol = collection(db, 'things');
+  const citySnapshot = await addDoc(thingsCol, data);
+  return citySnapshot;
+}

@@ -1,7 +1,8 @@
 import { onAuthStateChanged } from 'firebase/auth'
-import { useState } from 'react'
+import { onSnapshot, serverTimestamp } from 'firebase/firestore'
+import { useCallback, useEffect, useState } from 'react'
 import './App.css'
-import { firebaseAuthService, handleGoogleSignin, handleLogout } from './lib/firebase'
+import { addThing, firebaseAuthService, handleGoogleSignin, handleLogout, thingsRef } from './lib/firebase'
 
 function App() {
   const [displayUser, setDisplayUser] = useState(null)
@@ -16,9 +17,30 @@ function App() {
     </div>
   }
 
-  onAuthStateChanged(firebaseAuthService, (user) => {
-    setDisplayUser(user)
+  const handleCreateThing = useCallback(async () => {
+    if (displayUser) {
+      await addThing({
+        uid: displayUser.uid,
+        name: "New Item " + Math.random().toString(),
+        createdAt: serverTimestamp()
+      })
+    }
   })
+
+  let unsub;
+
+  useEffect(() => {
+    onAuthStateChanged(firebaseAuthService, (user) => {
+      if (user) {
+        setDisplayUser(user)
+        unsub = onSnapshot(thingsRef, snapShot => {
+          console.log(snapShot.docs)
+        })
+      } else {
+        unsub && unsub()
+      }
+    })
+  }, [displayUser])
 
   const btn = !displayUser ? (
     <button onClick={handleGoogleSignin}>Google Signin</button>
@@ -30,6 +52,7 @@ function App() {
     <div className="App">
       {userSection}
       {btn}
+      <button onClick={handleCreateThing}>Create Thing</button>
     </div >
   )
 }
